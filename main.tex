@@ -1,5 +1,8 @@
 \documentclass{l4proj}
-
+\usepackage{listings}
+\usepackage{minted}
+\usemintedstyle{emacs}
+\newcommand{\code}[1]{\texttt{#1}}
 %% Language and font encodings
 % \usepackage[english]{babel}
 % \usepackage[utf8x]{inputenc}
@@ -281,7 +284,6 @@ Subject               & 0.1594 & 9.75              & 0.15835                    
 \label{results}
 \end{table}
 \end{center}
-\end{document}
 
 \section{User Evaluation}
 \subsection{Think-Aloud}
@@ -313,28 +315,33 @@ At this point in the project, the implementation of most of the IR functionality
 \subsection{Unit Testing}
 JUnit was used to organise and run unit tests on the various classes present in the backend application.
 The Arrange-Act-Assert pattern was used to organise unit tests in a structured way. This arrangement allows for clear identification of the method being tested, separate from the code needed to prepare for the test.
-Testing necessitated the restructuring of some of the files which read and write information to files. Let us observe an example in the form of the TargetDocument.java class. This class analyses a gzipped target document to create a representation which can be converted to JSON and delivered to the Web App for viewing.
+Testing necessitated the refactoring of some of the files which read and write information to files. Let us observe an example in the form of the TargetDocument.java class. This class analyses a compressed target document to create a representation which can be converted to JSON and delivered to the Web App for viewing.
 The constructor originally took a file path and constructed the necessary streams and readers to allow for reading of the file.
-\begin{lstlisting}
+\begin{minted}{java}
 public TargetDocument(String path){
-		try {
-			FileInputStream stream = new FileInputStream(path);
-			GZIPInputStream gzStream = new GZIPInputStream(stream);
-			InputStreamReader inputStreamReader = new InputStreamReader(gzStream);
-			BufferedReader br = new BufferedReader(inputStreamReader);
-                  documentParser(br);
-            ...
-\end{lstlisting}
-This approach is inflexible as it assumes the file path will direct to a gzipped file.
-A better, more general, approach is to have the constructor take a \code{Reader} interface as an argument. We can then instantiate the necessary \code{BufferedReader} needed.
-\begin{lstlisting}
+  try {
+    FileInputStream stream = new FileInputStream(path);
+    GZIPInputStream gzStream = new  GZIPInputStream(stream);
+    InputStreamReader inputStreamReader = new  InputStreamReader(gzStream);
+    BufferedReader br = new  BufferedReader(inputStreamReader);
+    documentParser(br);
+...
+\end{minted}
+
+This approach is inflexible as it assumes the file path will direct to a gzipped file. It means that unit tests need either a sandbox file system to prepare tests, or some kind of mocking of the file system. Mocking a file system is overly complex and adding a sandbox filesystem adds unpredictable side effects.
+A better, more general, and self contained approach is to have the constructor take a \code{Reader} interface as an argument. We can then instantiate the necessary \code{BufferedReader} needed.
+
+\begin{minted}{java}
 public TargetDocument(Reader r){
-		BufferedReader br = new BufferedReader(r);
-		this.docNo = this.title = this.date = this.keywords = this.body = "";
-		documentParser(br);
-\end{lstlisting}
-\subsection{Integration Testing}
-Integration aims to achieve something quite different to unit testing. This tests the behaviour and responses of the API Methods rather than any of their underlying objects. This is important in order to identify correct response codes were being sent as a result of various requests.
+    BufferedReader br = new BufferedReader(r);
+    this.docNo = this.title = this.date = this.keywords = this.body = "";
+    documentParser(br);
+...
+\end{minted}
+
+This approach was extended to several classes which handle interacting with files.
+Code which interacted with the Terrier API posed problems in term of unit testing. Terrier often introduces side effects in the form of interacting with established index files in the file system.
+
 \section{Conclusion}
 
 \chapter{Conclusions}
