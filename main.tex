@@ -232,7 +232,7 @@ This feature can also be exploited to allow for automatic firing of events not r
 
 \section{Components for Tab System}
 Knockout provides a component system which allows one to register new html elements, along with a specific view model with which these objects interact. The programmer provides a html template (complete with data-binding) and a ViewModel. When instantiating one of these components one passes in arguments to fill the ViewModel.
-This system lends itself excellently to the tab system present in the system. Using a "foreach" binding along with these custom components a fully functional tab system exists, which is, at it's foundation, simply an array of docNo's. Such is the power of declarative bindings and custom components! Haha!
+This system lends itself excellently to the tab system present in the system. Using a ``foreach" binding along with these custom components a fully functional tab system exists, which is, at it's foundation, simply an array of docNo's. Such is the power of declarative bindings and custom components! Haha!
 
 \section{Summary}
 In order to validate user acceptance testing it was decided that variants of the front end system were to be created. These variants would play on some of the main features of the FrontEnd design, in order to identify the UI elements which were helping and hindering the user experience.
@@ -311,7 +311,28 @@ At this point in the project, the implementation of most of the IR functionality
 \section{Refining the System}
 \section{Testing}
 \subsection{Unit Testing}
-JUnit was used to organise and run unit tests on the various classes present in the application.
+JUnit was used to organise and run unit tests on the various classes present in the backend application.
+The Arrange-Act-Assert pattern was used to organise unit tests in a structured way. This arrangement allows for clear identification of the method being tested, separate from the code needed to prepare for the test.
+Testing necessitated the restructuring of some of the files which read and write information to files. Let us observe an example in the form of the TargetDocument.java class. This class analyses a gzipped target document to create a representation which can be converted to JSON and delivered to the Web App for viewing.
+The constructor originally took a file path and constructed the necessary streams and readers to allow for reading of the file.
+\begin{lstlisting}
+public TargetDocument(String path){
+		try {
+			FileInputStream stream = new FileInputStream(path);
+			GZIPInputStream gzStream = new GZIPInputStream(stream);
+			InputStreamReader inputStreamReader = new InputStreamReader(gzStream);
+			BufferedReader br = new BufferedReader(inputStreamReader);
+                  documentParser(br);
+            ...
+\end{lstlisting}
+This approach is inflexible as it assumes the file path will direct to a gzipped file.
+A better, more general, approach is to have the constructor take a \code{Reader} interface as an argument. We can then instantiate the necessary \code{BufferedReader} needed.
+\begin{lstlisting}
+public TargetDocument(Reader r){
+		BufferedReader br = new BufferedReader(r);
+		this.docNo = this.title = this.date = this.keywords = this.body = "";
+		documentParser(br);
+\end{lstlisting}
 \subsection{Integration Testing}
 Integration aims to achieve something quite different to unit testing. This tests the behaviour and responses of the API Methods rather than any of their underlying objects. This is important in order to identify correct response codes were being sent as a result of various requests.
 \section{Conclusion}
