@@ -186,7 +186,7 @@ This was important as the learning curve for the backend technologies required m
 JQuery is used in the front end to interface with the back end through HTTP requests. JQuery is a dependency of both Knockout and Bootstrap and so utilizing it's already present features was a given.
 
 \paragraph{Web Application Framework}
-The web application currently runs on top of an Express.js server running on Node.js. This is not particularly necessary as the web application could, in theory, be served through a static web server such as GitHub Pages. What Express.js does allow for, however, is the use of the EJS template system. EJS allows us to define partial HTML pages and insert them into others. This is useful with in the MVVM design as we can initialize parts of the front end with specific ViewModels using the "With Binding" TODO: See Implementation.
+The web application currently runs on top of an Express.js server running on Node.js. This is not particularly necessary as the web application could, in theory, be served through a static web server such as GitHub Pages. What Express.js does allow for, however, is the use of the EJS template system. EJS allows us to define partial HTML pages and insert them into others. This is useful with in the MVVM design as we can initialize parts of the front end with specific ViewModels using the ``With Binding" TODO: See Implementation.
 
 \chapter{Server Implementation}
 \section{Dependency Management and Build System}
@@ -198,7 +198,9 @@ The system operates on the assumption that there already exists a target index w
 As such, a separate Java program was written which can index target documents if needs be. This program loads the appropriate terrier.properties and invokes indexing through Terriers API. As Target Indexing uses the same Tokeniser as Source Indexing, we can guarantee that matching terms continue to match after NLP analysis
 
 \subsection{Source Documents}
-Source indexing is invoked through the REST api. Again this loads the relevant properties and invokes indexing through the Terrier API
+Source indexing is invoked through the REST API. Again this loads the relevant properties and invokes indexing through the Terrier API
+
+\paragraph{Available Indexes}
 
 \subsection{Named Entity Tokeniser}
 As aforementioned NO YOU HAVENT, we wanted to identify Named Entities within documents to enhance query generation and provide better retrieval. Terrier indexing uses a tokeniser to identify terms to add to the index. This provided a hook-in point for named entity identification as we can indentify if terms are Named Entities before they are passed out of the tokeniser to be added into the index.
@@ -230,7 +232,7 @@ JetBrains WebStorm was used to develop the client web application. It allows for
 \section{ViewModel and Data Binding}
 
 \section{Computed Functions and Observables}
-Within the ViewModel, the programmer defines Observables instead of plain JS variables. These ensure inclusion of the logic needed to interact with the DOM through data-binding. Observables can also be "computed". This means that their value depends on an automatically evaluating function. These functions re-evaluate any time an observable which is a dependency to the function changes. This system allows for complex logic which can be fired off automatically depending on certain circumstances.
+Within the ViewModel, the programmer defines Observables instead of plain JS variables. These ensure inclusion of the logic needed to interact with the DOM through data-binding. Observables can also be ``computed". This means that their value depends on an automatically evaluating function. These functions re-evaluate any time an observable which is a dependency to the function changes. This system allows for complex logic which can be fired off automatically depending on certain circumstances.
 This feature can also be exploited to allow for automatic firing of events not related to any specific observable. This is very useful in this project's context as we can send off API requests when certain observables change, for example the requested source document.
 
 \section{Components for Tab System}
