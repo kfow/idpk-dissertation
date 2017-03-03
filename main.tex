@@ -38,6 +38,7 @@ Expand this.
 
 \tableofcontents
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
 \pagenumbering{arabic}
 
@@ -78,6 +79,7 @@ Wikify!, Other papers
 M. Moss. Where Have All the Files Gone? Lost in Action Points Every One? J. Contemporary History, 47(4), 2012.
 See P867 for some background on the introduction of born digital documents in government and P872 for a bit about 'the gap’ you are addressing.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Requirements and Design}
 \section{Requirements}
 Throughout the project, requirements were identified and categorised using the MoSCoW method. This means that each requirement is identified as either Must Have, Should Have, Could Have or Would Like to Have.
@@ -188,6 +190,7 @@ JQuery is used in the front end to interface with the back end through HTTP requ
 \paragraph{Web Application Framework}
 The web application currently runs on top of an Express.js server running on Node.js. This is not particularly necessary as the web application could, in theory, be served through a static web server such as GitHub Pages. What Express.js does allow for, however, is the use of the EJS template system. EJS allows us to define partial HTML pages and insert them into others. This is useful with in the MVVM design as we can initialize parts of the front end with specific ViewModels using the ``With Binding" TODO: See Implementation.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Server Implementation}
 \section{Dependency Management and Build System}
 Maven was used as a dependency management and build system. Maven was chosen due to it's ease of use and clear documentation. It allowed for easy inclusion of all the dependencies needed for the project such as Terrier, StanfordNLP and Jersey. Maven's build system also ensures all unit and integration tests pass before building the system into a runnable jar file. Look into how you actually want to build the system. Can't run in eclipse forever.
@@ -198,27 +201,37 @@ The system operates on the assumption that there already exists a target index w
 As such, a separate Java program was written which can index target documents if needs be. This program loads the appropriate terrier.properties and invokes indexing through Terriers API. As Target Indexing uses the same Tokeniser as Source Indexing, we can guarantee that matching terms continue to match after NLP analysis
 
 \subsection{Source Documents}
-Source indexing is invoked through the REST API. Again this loads the relevant properties and invokes indexing through the Terrier API
+Source indexing is invoked through the REST API. Again this loads the relevant properties and invokes indexing through the Terrier API.
+
+\paragraph{Query Generation}
 
 \paragraph{Available Indexes}
+Since we can index individual directories of source documents, a tool to choose which collection to review must also be provided. This functionality relies on a system of recursive file finding. The psuedocode is as folows:
 
 \subsection{Named Entity Tokeniser}
 As aforementioned NO YOU HAVENT, we wanted to identify Named Entities within documents to enhance query generation and provide better retrieval. Terrier indexing uses a tokeniser to identify terms to add to the index. This provided a hook-in point for named entity identification as we can indentify if terms are Named Entities before they are passed out of the tokeniser to be added into the index.
 
 \section{Retrieval}
-Retrieval is invoked through the REST API. A query is passed in. More, too basic
+Retrieval is invoked through the REST API. A query is passed in.
+
+\section{Document Parsing}
+In order to display the source and target documents to users on the front end they must be parsed and converted to JSON.
+Both target and source docuements are provided in TREC format with various meta-data tags and an untagged body section. 
+
+\section{Evaluation Preparation}
+In order to prepare the topics and qrels files necessary for offline evaluation. 
 
 \section{Properties}
 Terrier operates with a collection of properties which change the behaviour of it's various operations. These properties can be set inside a terrier.properties file, however this complicates changing these properties between different operations. These properties can be set programatically and so a static class was made which allows for easy switching of settings to facilitate correct invokation of indexing and retrieval. : Talk about Source vs. Target indexing
 
 \section{Test Collection Generation}
 To allow for the offline evaluation identified in the : Insert section API methods were added to allow addition of topics and qrels.
-
-\section{URL Paths : Naming}
+Reading/Writing to these files.
 
 \section{Summary}
 research questions for eval chapter
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Client Implementation}
 This chapter will deal with the steps taken in the implementation of the web application which acts as the client in the client server paradigm.
 
@@ -242,6 +255,7 @@ This system lends itself excellently to the tab system present in the system. Us
 \section{Summary}
 In order to validate user acceptance testing it was decided that variants of the front end system were to be created. These variants would play on some of the main features of the FrontEnd design, in order to identify the UI elements which were helping and hindering the user experience.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Evaluation}
 \section{Offline Evaluation Using Terrier}
 \subsection{Aims and Method}
@@ -346,6 +360,7 @@ Code which interacted with the Terrier API posed problems in term of unit testin
 
 \section{Conclusion}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusions}
 \section{Fulfilled Requirements}
 \section{Possible Improvements}
