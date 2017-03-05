@@ -2,6 +2,16 @@
 \usepackage{listings}
 \usepackage{minted}
 \usemintedstyle{emacs}
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.8}
+\usepackage{filecontents}
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{tikz}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{url}
 \newcommand{\code}[1]{\texttt{#1}}
 %% Language and font encodings
 % \usepackage[english]{babel}
@@ -55,17 +65,22 @@ We will finally discuss the evaluation techniques used to improve the system and
 
 \chapter{Related Literature}
 \section{Sensitivity Review}
-Towards a Classifier for Digital Sensitivity Review. Graham McDonald, Craig Macdonald, Iadh Ounis, and Timothy Gollins. In Proceedings of the 36th European Conference on Information Retrieval 2014, (ECIR 2014)
+\paragraph{Towards a Classifier for Digital Sensitivity Review}
+This paper discusses other methods to help alleviate concerns related to sensitivity review as more and more records move from paper to digital \cite{mcdonald2014towards}. It identifies that named entities and document sentiment may be used to automatically identify potential sensitivities. Although related to this project, this work aims to identify sensitive documents before review, rather than to help facilitate review by identifying public domain knowledge.
 
-On Using Information Retrieval for the Selection and Sensitivity Review of Digital Public Records. Timothy Gollins, Graham McDonald, Craig Macdonald, and Iadh Ounis. In Proceedings of Privacy-Preserving IR: When Information Retrieval Meets Privacy and Security, workshop @ SIGIR 2014, (PIR 2014)
-\subsection{Paper Processing}
-The current sensitivity review procedures used by government archivists are less then ideal. Papers
+\paragraph{On Using Information Retrieval for the Selection and Sensitivity Review of Digital Public Records}
+This is another paper which discusses the challenges and potential avenues for improving the digital sensitivity review process\cite{gollins2014using}. A key, relevant point being that reviewers are reluctant to trust technology alone in this type of work. As such, technology which can assist the manual review process (such as that developed in this project) will be increasingly important as the review process is improved and iterated upon.
+
+\subsection{From Paper to Digital Processing}
+The current sensitivity review procedures used by government archivists are less then ideal. Paper documents must be read in full and any issues must be taken up with other departments. Moving to digital records increases greatly the number of documents to be reviewed and, as such, this process is unreasonable. These concerns were key in the development of the above research projects, as well as this one. Records Review \cite{allan2014record} outlines these concerns.
+
 \subsection{Assistive Technology for Sensitivity}
 
 \section{Information Retrieval}
 \subsection{Search Engines}
 Terrier, Lucene
 \subsection{Ad-hoc Retrieval}
+
 \subsection{High Recall Tasks}
 Precision, Recall, Have you got all of the relevant documents
 E-Discovery, Patent Search
@@ -90,136 +105,168 @@ These initial requirements allowed the developer to begin work on the project, a
 The functional requirements of the project were further ratified through user stories. 
 TODO: Reference for Virtues of user stories + reference?
 \paragraph{Must Have\\}
-M1 - Front end user interface displaying source document for review and target documents automatically identified by the software.
-      As a document reviewer (archivist)
-      I want to view both the document up for review and associated press and Wiki articles
-      So that I can easily compare contents of both and see what is known in the public domain.
+\begin{enumerate}[label=\textbf{M.\arabic*}]
+\item Allow user to identify when a document contains public domain knowledge. \\
+\textit{As a} document reviewer, \\
+\textit{I want} the ability to decide that a document contains public domain knowledge \\
+\textit{So that} I can make a decision regarding it's status. \\
 
-M2 - Trials of different retrieval methods and some form of quantitative analysis based on these.
-      As a document reviewer
-      I want to be confident that this software will return the most relevant results in reasonable time
-      So that I can trust the service to return excellent related documents.
+\item Front end user interface displaying source document for review and target documents automatically identified by the software. \\
+\textit{As a} document reviewer, \\
+\textit{I want} to view both the document up for review and associated press and Wiki articles \\
+\textit{So that} I can easily compare contents of both and see what is known in the public domain. \\
+\item Trials of different retrieval methods and some form of quantitative analysis based on these. \\
+\textit{As a} document reviewer, \\
+\textit{I want} to be confident that this software will return the most relevant results in reasonable time, \\
+\textit{So that} I can trust the service to return excellent related documents.
+\end{enumerate}
 
 \paragraph{Should Have}
-S1 - Generate suggested queries to allow user to refine returned related documents.
-      As a document reviewer
-      I want to refine search terms for related documents
-      So that more relevant documents are returned
+\begin{enumerate}[label=\textbf{S.\arabic*}]
+\paragraph{Should Have}
+\item Generate suggested queries to allow user to refine returned related documents. \\
+\textit{As a} document reviewer, \\
+\textit{I want} to refine search terms for related documents, \\
+\textit{So that} more relevant documents are returned.
 
-S2 - Ability to run custom queries.
-      As a document reviewer
-      I want to write my own queries
-      So that I can retrieve the best results and be sure that the automatic query system is performing as well as possible.
+\item Ability to run custom queries. \\
+\textit{As a} document reviewer, \\
+\textit{I want} to write my own queries, \\
+\textit{So that} I can retrieve the best results and be sure that the automatic query system is performing as well as possible.
 
-S3 - Date range searches:
-      As a document reviewer
-      I want to limit date range for retrieval of related documents
-      So that I can ensure relevance of related documents
+\item Date range searches. \\
+\textit{As a} document reviewer, \\
+\textit{I want} to limit date range for retrieval of related documents, \\
+\textit{So that} I can ensure relevance of related documents.
 
 \paragraph{Could Have}
-C1 - Machine learning to improve system performance over time based on usage by reviewers
-	As a document reviewer
-	I want my actions using the system to improve it’s performance to better suit my needs
-	So that it is easier to find related documents that I would deem relevant
+\end{enumerate}
+\begin{enumerate}[label=\textbf{C.\arabic*}]
+\item Machine learning to improve system performance over time based on usage by reviewers. \\
+\textit{As a} document reviewer, \\
+\textit{I want} my actions using the system to improve it’s performance to better suit my needs, \\
+\textit{So that} it is easier to find related documents that I would deem relevant.
+\item Tf-idf (Term Frequency - Inverse Document Frequency) analysis to better identify relevant documents. \\
+\textit{As a} document reviewer, \\
+\textit{I want} to only have returned to me related documents which have been identified as containing search terms in meaningful ways, \\
+\textit{So that} I can be sure the returned documents contain information as relevant as possible to the search terms.
+\end{enumerate}
 
-C2 - Tf-idf (Term Frequency - Inverse Document Frequency) analysis to better identify relevant documents.
-      As a document reviewer
-      I want to only have returned to me related documents which have been identified as containing search terms in meaningful ways.
-      So that I can be sure the returned documents contain information as relevant as possible to the search terms.
-
-\paragraph{Would Like to Have}
-W1 - Wikify! Like functionality to automatically highlight and link to concepts in source documents which have wikipedia articles associated with them.
-      As a document reviewer,
-      I want to have easy access to wikipedia articles of items mentioned in the document I am reviewing,
-      So that I can easily find out more about concepts mentioned in documents.
+\paragraph{Would Like To Have}
+These are requirements which are outside the scope of this project and are not deemed important enough to be implemented.
+\begin{enumerate}[label=\textbf{W.\arabic*}]
+\item Wikify! Like functionality to automatically highlight and link to concepts in source documents which have wikipedia articles associated with them. \\
+\textit{As a} document reviewer, \\
+\textit{I want} to have easy access to wikipedia articles of items mentioned in the document I am reviewing, \\
+\textit{So that} I can easily find out more about concepts mentioned in documents.
+\end{enumerate}
 
 \subsection{Non-Functional Requirements}
-Easy to use user interface. \\
-Results must be relevant. \\
-Must return results in reasonable time. \\
-Scalability to handle new large amounts of files. \\
-Present results in an intuitive and understandable way. \\
+\begin{enumerate}[label=\textbf{NF.\arabic*}]
+\item Easy to use user interface.
+\item Results must be relevant.
+\item Must return results in reasonable time.
+\item Scalability to handle new large amounts of files.
+\item Present results in an intuitive and understandable way.
+\end{enumerate}
 
 \section{Design and Architecture}
-The product/application is based on a client-server design. More specifically, a web application acts as a client which interfaces with a RESTful API acting as a server.
+The application is based on a client-server design. More specifically, a web application acts as a client which interfaces with a RESTful API acting as a server.
 The client communicates with the server using HTTP requests which request information from the server or update information on the server.
 The web application maintains no state between usages, but rather requests all necessary data from the server at upon loading. Having no state system in the client application greatly reduces the complexity of the web application.
-State and persistence is managed on the server entirely using Terrier and Trec files. This will be discussed in more detail in the server design section.
+State and persistence is managed on the server entirely using Terrier and Trec files. This will be discussed in more detail in the Server Architecture section.
 
 \subsection{Server Architecture}
 \paragraph{Information Retrieval}
-For the information retrieval needs of the project, Terrier was used. Terrier is a open-source search engine with an extensive Java API allowing it to be easily used for development of various IR tasks.
+For the information retrieval needs of the project, Terrier was used. Terrier is a open-source search engine developed at The University of Glasgow, with an extensive Java API allowing it to be easily used for development of various IR tasks \cite{terrier} \cite{macdonald2012puppy}.
 Terrier, being developed at The University of Glasgow, was the best and obvious choice of IR technology for the project. The local expertise meant that problems encountered could be easily resolved or explained, ensuring minimal downtime due to learning.
-Other potential choices for this section could have been Apache Lucene or MG4J as recommended in Middleton-Baeza's Comparison of Open Source Search Engines \cite{middletonbaeza}.
+Other potential choices for this section could have been Apache Lucene or MG4J as recommended in Middleton-Baeza's Comparison of Open Source Search Engines \cite{middleton2007comparison}.
 
 \paragraph{Persistence}
-During indexing, one can save metadata to be retrieved for each document in the index. This provides an excellent opportunity to save some post-analysis information.
-The documents pertinent to the project (both source and target) are stored within the server filesystem as .trec files. There is one document per file.
-Importantly, during indexing, terrier uses a provided collection.spec file in order to identify files to index. It then assigns these documents document ids in order of analysis. This order corresponds to the line number of the collection.spec.
-Thusly, we can leverage this fact to read the collection.spec and find a document path if we have a doc id.
-This allows us to read information directly from document files using the paths in the collection.spec.
-Furthermore, we can write to these .trec files, and save within them, information too large to save in the meta-index generated during terrier indexing.
-
-Using all of these techniques we have a fully functional state system capable of retaining all the necessary information needed for the system.
-This design entirely eliminates the need for a DBMS (Database Management System) like PostgreSQL and the complicated Java to Database Model mapping that often comes with such designs.
+During indexing, one can save metadata to be retrieved for each document in the index. This provides an excellent opportunity to save some post-analysis information within the index data-structure.
+The documents pertinent to the project (both source and target) are stored within the server file system as .trec files. There is one document per file.
+Importantly, during indexing, Terrier uses a provided \code{collection.spec} file in order to identify files to index. It then assigns these documents ids in order of analysis. This order corresponds to the line number of the \code{collection.spec}. Leveraging this fact, we can find the line number corresponding to the file path of a document by reading the line of the \code{collection.spec} identified by the document id.
+Furthermore, we can write to these \code{.trec} files, and save within them, information too large to save in the meta-index generated during terrier indexing.
+These techniques produce a fully functional state system capable of retaining all the necessary information needed for the system.
+This design entirely eliminates the need for a DBMS (Database Management System) like PostgreSQL and the complicated Java Object to Database Model mapping that often comes with such designs.
 We leverage the capabilities of already present technologies to provide persistent state without wasting extensive resources.
 
 \paragraph{Natural Language Processing}
-Stanford Natural Language Processing was used as an NLP framework to allow for greater accuracy in queries. Provided is a Java API which allows text to be analyzed and annotated. More specifically, the named entity identification capability of StandordNLP was used.
+Stanford Natural Language Processing was used as an NLP framework to allow for greater accuracy in queries \cite{manning-EtAl:2014:P14-5}. Provided is a Java API which allows text to be analysed and annotated. More specifically, the named entity identification capability of StandordNLP was used \cite{finkel2005incorporating}.
 Stanford NLP was initially chosen due to its preferable documentation. It also offers the ability to identify specifically which tokenisers to use when processing some text allowing the developer to streamline the NLP process to their specific use-case.
 
 \paragraph{RESTful API}
-The entire back-end application is based around Java. This was an obvious choice due to Terriers Java API and the necessity to build upon this to create a viable product.
-Jersey is a RESTful API framework for Java that allows the programmer to define endpoints for HTTP requests. TODO: Wording
-Jackson handles the conversion of JSON to POJOs and Vice-Versa? TODO: Beef this section out.
+The entire back-end application is written in Java. This was an obvious choice due to Terriers Java API and the necessity to build upon this to create a viable product.
+Jersey is a framework which provides a reference implementation of the JAX-RS API as defined by Oracle \cite{jersey} \cite{jaxrsapi}.
+Jackson is used alongside Jersey to provide support for JSON \cite{jackson}. This allows the frontend and backend to communicate using one format. It handles the conversion of JSON to Java Objects and vice versa.
 
 \subsection{Client Architecture}
 \paragraph{Model View ViewModel}
-The architecture of the front end user interface is based around the Model View ViewModel design pattern. Facilitated by the JS library Knockout.js, MVVM allows us to separate the logic associated with the DOM (Domain Object Model) TODO: to where?
+The architecture of the front end user interface is based around the Model View ViewModel (MVVM) design pattern. Facilitated by the JS library Knockout.js, MVVM allows us to consolidate the logic associated with the DOM (Domain Object Model) into one place \cite{knockout}.
 We no longer need to apply JQuery or Vanilla Javascript to individual DOM elements through classes and ids, but instead we can apply rules identified in the ViewModel to various elements throughout the DOM. This allows for dependency tracking of JS variables and automatic real time updates as their values change.
-This lends itself well to the problem domain of many rapidly changing documents and results sets as the user identifies relevant documents.
+This lends itself well to the problem domain of many rapidly changing documents and results sets as the user identifies relevant documents. \\
+Knockout was chosen due to developer familiarity. There are various other libraries that allow for similar designs, however familiarity with Knockout's syntax and best practices meant that development was easy and fast.
+This was important as the learning curve for the backend technologies required more attention, and so ease of development on the frontend was key.
 
 \paragraph{Style}
-Bootstrap was chosen mainly due to familiarity reasons. It provides myriad customisable components, as well as being extremely well documented. This dramatically simplifies the rapid development of a user interface.
+Bootstrap was chosen mainly due to familiarity reasons. It provides myriad customisable components, as well as being extremely well documented \cite{bootstrap}. This dramatically simplifies the rapid development of a user interface.
 
-\paragraph{Javascript Libraries}
-As mentioned in section ?? Knockout.js facilitates the MVVM pattern. There are various other libraries that allow for similar designs, however familiarity with Knockout's syntax and best practices meant that development was easy and fast.
-This was important as the learning curve for the backend technologies required more attention, and so ease of development on the frontend was key.
-JQuery is used in the front end to interface with the back end through HTTP requests. JQuery is a dependency of both Knockout and Bootstrap and so utilizing it's already present features was a given.
+\paragraph{AJAX}
+JQuery is used in the frontend to interface with the backend through HTTP (AJAX) requests. JQuery provides a very well documented and widely adopted API for this. JQuery is a dependency of both Knockout and Bootstrap and so utilizing it's already present features was sensible and easy.
 
 \paragraph{Web Application Framework}
-The web application currently runs on top of an Express.js server running on Node.js. This is not particularly necessary as the web application could, in theory, be served through a static web server such as GitHub Pages. What Express.js does allow for, however, is the use of the EJS template system. EJS allows us to define partial HTML pages and insert them into others. This is useful with in the MVVM design as we can initialize parts of the front end with specific ViewModels using the ``With Binding" TODO: See Implementation.
+The web application currently runs on top of an Express.js server running on Node.js \cite{express} \cite{node}. This is not particularly necessary as the web application could, with some refactoring, be served through a static web server such as GitHub Pages. What Express.js does allow for, however, is the use of the EJS template system. EJS allows us to define partial HTML pages and insert them into others. This is useful within the MVVM design as we can initialize compartmentalized parts of the DOM with specific ViewModels using the \code{with} binding, see the Client Implementation (\ref{viewmodels}) chapter for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Server Implementation}
+\section{Tools}
+\paragraph{Git and GitHub}
+Git was used, alongside GitHub as Source Control Management (SCM) for the project \cite{git} \cite{github}. This allows one to maintain version history for the project. Hosting the repository on GitHub also served as a back-up for the project, and allows it to be cloned onto any machine.
 \section{Dependency Management and Build System}
-Maven was used as a dependency management and build system. Maven was chosen due to it's ease of use and clear documentation. It allowed for easy inclusion of all the dependencies needed for the project such as Terrier, StanfordNLP and Jersey. Maven's build system also ensures all unit and integration tests pass before building the system into a runnable jar file. Look into how you actually want to build the system. Can't run in eclipse forever.
+Maven was used as a dependency management and build system \cite{maven}. Maven was chosen due to it's ease of use and clear documentation. It allowed for easy inclusion of all the dependencies needed for the project such as Terrier, StanfordNLP and Jersey. Maven's build system also ensures all unit and integration tests pass before building the system into a runnable jar file.
 
+\section{Data}
+\subsection{Source Documents}
+During development the collection of source documents used for testing and experimentation was based 
+\subsection{Target Documents}
+A combination of Associated Press and Reuters articles were used as target documents to perform retrieval on. These were in TREC format, with one file per document. They were also each compressed due to the extremely large number of them.
+They were given in the following format:
+\begin{minted}{xml}
+<DOC>
+<DOCNO>trc2_168664420090204</DOCNO>
+<TITLE>GLOBAL MARKETS-Economy hopes boost stocks, dollar</TITLE>
+<DATE>2009-02-04</DATE>
+<KEYWORDS> MARKETS GLOBAL   </KEYWORDS>
+* Global stocks rise on economy hopes...
+</DOC>
+\end{minted}
 \section{Indexing}
 \subsection{Target Documents}
 The system operates on the assumption that there already exists a target index within it's directory structure.
-As such, a separate Java program was written which can index target documents if needs be. This program loads the appropriate terrier.properties and invokes indexing through Terriers API. As Target Indexing uses the same Tokeniser as Source Indexing, we can guarantee that matching terms continue to match after NLP analysis
+As such, a separate Java program was written which can index target documents if needs be. This program loads the appropriate Terrier properties and invokes indexing through Terriers API. During target document indexing we set the Terrier properties so as to create abstracts. Abstracts are parts of a tagged document to be saved in meta-data to provide helpful snippets of the document when it is found during retrieval. In this case, we generate abstracts for the title, data, keywords and body of the document to give an idea of document contents when looking at query results.
+The correct configuration of Terrier to achieve this caused considerate trouble during development and was actually the identifier of a flaw in Terrier itself. Owing to the fact that the project supervisor was a Terrier developer, this was fixed through a patch and the target index could be generated.
+As target document indexing uses the same tokeniser as source document indexing, we can guarantee term matching across the two corpora when performing retrieval.
 
 \subsection{Source Documents}
-Source indexing is invoked through the REST API. Again this loads the relevant properties and invokes indexing through the Terrier API.
-
-\paragraph{Query Generation}
+Source indexing is invoked through the REST API. Again this loads the relevant Terrier properties and invokes indexing through the Terrier API. The Terrier properties important to this operation are the \code{TrecDocTags.PropertyTags}, which identify the tags in a tagged document which are to be saved as document properties, rather than being indexed. Additionally, source indexing also invokes query generation (\ref{querygen}). 
 
 \paragraph{Available Indexes}
-Since we can index individual directories of source documents, a tool to choose which collection to review must also be provided. This functionality relies on a system of recursive file finding. The psuedocode is as folows:
+Since we can index individual directories of source documents, a tool to choose which collection to review must also be provided. This functionality relies on a system of recursive file finding. The psuedocode is as follows:
+
+\subsection{Query Generation} \label{querygen}
 
 \subsection{Named Entity Tokeniser}
-As aforementioned NO YOU HAVENT, we wanted to identify Named Entities within documents to enhance query generation and provide better retrieval. Terrier indexing uses a tokeniser to identify terms to add to the index. This provided a hook-in point for named entity identification as we can indentify if terms are Named Entities before they are passed out of the tokeniser to be added into the index.
+As aforementioned NO YOU HAVENT, we wanted to identify Named Entities within documents to enhance query generation and provide better retrieval. Terrier indexing uses a tokeniser to identify terms to add to the index. This provided a hook-in point for named entity identification as we can identify if terms are Named Entities before they are passed out of the tokeniser to be added into the index.
 
 \section{Retrieval}
 Retrieval is invoked through the REST API. A query is passed in.
 
 \section{Document Parsing}
 In order to display the source and target documents to users on the front end they must be parsed and converted to JSON.
-Both target and source docuements are provided in TREC format with various meta-data tags and an untagged body section. 
+Both target and source documents are provided in TREC format with various meta-data tags and an untagged body section. 
 
 \section{Evaluation Preparation}
-In order to prepare the topics and qrels files necessary for offline evaluation. 
+In order to prepare the \code{.topics} and \code{.qrels} files necessary for offline evaluation. 
 
 \section{Properties}
 Terrier operates with a collection of properties which change the behaviour of it's various operations. These properties can be set inside a terrier.properties file, however this complicates changing these properties between different operations. These properties can be set programatically and so a static class was made which allows for easy switching of settings to facilitate correct invokation of indexing and retrieval. : Talk about Source vs. Target indexing
@@ -237,12 +284,12 @@ This chapter will deal with the steps taken in the implementation of the web app
 
 \subsection{Tools and Methods}
 \paragraph{Dependency Management}
-Bower was used for dependency management within the realm of frontend javascript. Bower allows a programmer to define dependencies through a bower.json file. These can then be downloaded through a bower install command straight into a bower components folder. This was used to install JQuery, Bootstrap and Knockout.
+Bower was used for dependency management within the realm of frontend JavaScript. Bower allows a programmer to define dependencies through a \code{bower.json} file. These can then be downloaded through a bower install command straight into a bower components folder. This was used to install JQuery, Bootstrap and Knockout.
 
 \paragraph{IDE}
-JetBrains WebStorm was used to develop the client web application. It allows for easier and faster development by allowing one to run a node application through it's interface, as well as other niceties such as intelligent code completion.
+JetBrains WebStorm was used to develop the client web application. It allows for easier and faster development by allowing one to run a Node.js application through it's interface, as well as other niceties such as intelligent code completion.
 
-\section{ViewModel and Data Binding}
+\section{ViewModel and Data Binding} \label{viewmodels}
 
 \section{Computed Functions and Observables}
 Within the ViewModel, the programmer defines Observables instead of plain JS variables. These ensure inclusion of the logic needed to interact with the DOM through data-binding. Observables can also be ``computed". This means that their value depends on an automatically evaluating function. These functions re-evaluate any time an observable which is a dependency to the function changes. This system allows for complex logic which can be fired off automatically depending on certain circumstances.
@@ -253,80 +300,10 @@ Knockout provides a component system which allows one to register new html eleme
 This system lends itself excellently to the tab system present in the system. Using a ``foreach" binding along with these custom components a fully functional tab system exists, which is, at it's foundation, simply an array of docNo's. Such is the power of declarative bindings and custom components! Haha!
 
 \section{Summary}
-In order to validate user acceptance testing it was decided that variants of the front end system were to be created. These variants would play on some of the main features of the FrontEnd design, in order to identify the UI elements which were helping and hindering the user experience.
+In order to validate user acceptance testing it was decided that variants of the front end system were to be created. These variants would play on some of the main features of the frontend design, in order to identify the UI elements which were helping and hindering the user experience.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Evaluation}
-\section{Offline Evaluation Using Terrier}
-\subsection{Aims and Method}
-Offline evaluation was performed using the evaluation tools provided with Terrier. This evaluation allows one to produce detailed statistics regarding the performance of an IR system.\\
-For 20 source documents, a number of target documents were reviewed and rated as either relevant or non relevant. This formed the ground truth against which the evaluation could be performed.\\
-As discussed above, for each source document, 4 queries were automatically generated. Evaluations were run for each of the 4 query formulations with the aim of discovering which query it would be most suitable to run automatically upon a source document loading.\\
-We were most interested in the Mean Average Precision scores generated by the offline evaluation.\\
-Mean Average Precision (MAP) is a measure of the effectiveness of an IR system.
-It is given by:
-\begin{displaymath}
-  MAP=\frac{\sum_{n=1}^{Q} Ave(P(q)}{Q}
-\end{displaymath}
-Where: 
-\begin{itemize}
-\item{~$Q$ is the number of queries.}
-\item{~$Ave(P(q))$ is is the average precision of a given query.}
-\end{itemize}
-
-\subsection{Results}
-
-The query which performed the worst was the query formed from the subject line. This can be expected, as other than running Named Entity recognition on the line, no other analysis was done to improve it's performance. There is also no guarantee that the subject line will contain keywords which provide vital context to a query.\\
-Take, for example, this subject from a document in the source collection:
-\begin{center}
-``PARLIAMENT'S FALL SESSION: A PREVIEW"
-\end{center}
-We are given no insight into which country this refers to and although this is not true for many documents, the results clearly demonstrate the lack of depth in subject queries causes under-performance.\\
-The Tf-Idf Named Entities query scores almost double the subject query. It is limited to the top 10 highest scoring named entities in terms of Tf-Idf, meaning the query is highly relevant to the given document. Here terms are weighted more heavily if they appear frequently in the source document, but infrequently in the source collection. This (in theory) generates a more specific, focused query. \\
-The query consisting of all named entities identified in the document was second only to the query of all terms. This suggests that the inclusion of verbs and other non named entities produces a more meaningful query.\\
-We can see from Table \ref{results} and A GRAPH, that the most highly performing queries consist of more terms and take longer to process. Ultimately, however, the performance increase of the all terms query is too great to allow processing time to take precedence and so, this was the query chosen to run automatically upon a source document loading.\\w
-\begin{center}
-\begin{table}
-\centering
-\begin{tabular}{|c|c|c|c|}
-\hline
-Query                 & MAP    & Mean Query Length & Mean Query Processing Time (S) \\ \hline
-All Terms             & 0.4549 & 358.5             & 2.66615                        \\ \hline
-Named Entities        & 0.3976 & 93.45             & 0.4478                         \\ \hline
-Tf-Idf Named Entities & 0.3040 & 10                & 0.22595                        \\ \hline
-Subject               & 0.1594 & 9.75              & 0.15835                        \\ \hline
-\end{tabular}
-\caption{Terrier Evaluation Results}
-\label{results}
-\end{table}
-\end{center}
-
-\section{User Evaluation}
-\subsection{Think-Aloud}
-
-NAME-UNKNOWN, a key potential beneficiary of such a system participated in a small think-aloud study while examining the software in use. Some of the key points learned from this session are listed below:
-
-\begin{itemize}
-\item \textit{``Named Entity importance is nuanced and frequency (or Tf-Idf) of named entities does not necessarily produce the most important terms.''}
-\par
-This raises an important point regarding the limitations of automatic query generation.\textbf{There is of course the ability to run custom queries. But this could be improved somewhat}
-
-\item \textit{``Further term highlighting or importance weighting is necessary to help produce the best results.''}
-\par
-This point highlight the fact that the queries generated right now are fairly general, and with some deep understanding of the way archivists review documents could help produce better results. Briefly mentioned was weighting the first and last paragraphs higher than the middle of the document, as these are likely to contain the most pertinent information.
-
-\item \textit{``More advanced methods could be leveraged to improve yet further the capabilities of the software, like eye tracking or automatic querying upon highlighting''}
-\par
-Although beyond the scope of this project, this point identifies the potential expansion of this project. Eye-tracking could be used to automatically track what the user is interested in from the source document, forming the basis of new automatic queries. A simplified version of this could use text highlighting to accomplish the same results.
-
-\item \textit{``UI considerations are equally as important as information retrieval considerations when it comes to improving the effectiveness of the software''}
-\par
-At this point in the project, the implementation of most of the IR functionality was complete. It now became important to consider how best to modify and improve the user interface to ensure the easiest experience possible. - DECORATION
-\end{itemize}
-
-\textbf{Talk about how this allowed iteration and improvement}
-
-\section{Refining the System}
 \section{Testing}
 \subsection{Unit Testing}
 JUnit was used to organise and run unit tests on the various classes present in the backend application.
@@ -357,16 +334,151 @@ public TargetDocument(Reader r){
 
 This approach was extended to several classes which handle interacting with files.
 Code which interacted with the Terrier API posed problems in term of unit testing. Terrier often introduces side effects in the form of interacting with established index files in the file system.
+\section{Qualitative Analysis and Defining Relevance}
+Through the course of developing the system and producing the ground truth necessary for the Offline Evaluation as discussed in the next section, certain nuances of the system became clear.
+It was clear that named entity analysis was certainly not always full proof. Sometimes entities were missed and often words such as ``and'' or ``the'' were tagged as named entities incorrectly. Combating this, the variations of ``and'' and ``the'' created in the named entity identification process were added to the stopwords file to avoid them appearing in queries and being matched in retrieval.
+In order to produce the \code{qrels} file it was necessary to define returned target documents as ``relevant'' or ``not relevant''. This was extremely nuanced and relied on the discretion of the reviewer.
+Sometimes dates were important - example Fighting in North Darfur.
+Othertimes they were not. Cluster Munitions Japan for example.
+A single word can throw off the search results. ``Congress''.
+The query formed from Tf-Idf ranking of named entities was interesting. It often produced relevant results, but was also the cause of many strange results, such as reports on international sports fixtures. One can see how this occurred, since the names of several countries (often small African nations) not mentioned frequently throughout the collection can push these terms to the top of this query.
+
+\section{Offline Evaluation Using Terrier}
+\begin{filecontents*}{data.csv}
+map length time
+0.4549  358.5  2.66615
+0.3976  93.45  0.4478
+0.3040  10  0.22595
+0.1594  9.75  0.15835
+\end{filecontents*}
+\subsection{Aims and Method}
+The aim of this quantitative evaluation was to gather data relating to the performance of the variations of queries formed from source documents. These results could then be used to determine which query was most appropriate to run automatically upon source document loading. \\
+The methods used to produce these queries is discussed at length in the Server Implementation chapter, see \ref{querygen}.
+Offline evaluation was performed using the evaluation tools provided with Terrier. This evaluation allows one to produce detailed statistics regarding the performance of an IR system.\\
+For 20 source documents, a number of target documents were reviewed and rated as either relevant or non relevant. This formed the ground truth against which the evaluation could be performed.\\
+We were most interested in the Mean Average Precision scores generated by the offline evaluation.\\
+Mean Average Precision (MAP) is a measure of the effectiveness of an IR system.
+It is given by:
+\begin{displaymath}
+  MAP=\frac{\sum_{n=1}^{Q} Ave(P(q)}{Q}
+\end{displaymath}
+Where: 
+\begin{itemize}
+\item{~$Q$ is the number of queries.}
+\item{~$Ave(P(q))$ is is the average precision of a given query.}
+\end{itemize}
+
+Also considered was the effects of Document At A Time (DAAT) vs. Term At A Time (TAAT) retrieval. This means whether a full document is considered using all the terms from a query (DAAT) or each term is considered concurrently for all documents (TAAT). In order to ensure the choice of query conformed to the non-functional requirements, specifically \textbf{NF.3}, we also consider mean retrieval time.
+\subsection{Results}
+The query which performed the worst was the query formed from the subject line. This can be expected, as other than running Named Entity recognition on the line, no other analysis was done to improve it's performance. There is also no guarantee that the subject line will contain keywords which provide vital context to a query.\\
+Take, for example, this subject from a document in the source collection:
+\begin{center}
+``PARLIAMENT'S FALL SESSION: A PREVIEW"
+\end{center}
+We are given no insight into which country this refers to and although this is not true for many documents, the results clearly demonstrate the lack of depth in subject queries causes under-performance.\\
+The Tf-Idf Named Entities query scores almost double the subject query. It is limited to the top 10 highest scoring named entities in terms of Tf-Idf, meaning the query is highly relevant to the given document. Here terms are weighted more heavily if they appear frequently in the source document, but infrequently in the source collection. This (in theory) generates a more specific, focused query. \\
+The query consisting of all named entities identified in the document was second only to the query of all terms. This suggests that the inclusion of verbs and other non named entities produces a more meaningful query.\\
+We can see from Table \ref{results} and Figures \ref{fig: timegraph} and \ref{fig: lengthgraph}, that the most highly performing queries consist of more terms and take longer to process.\\
+Although the All Terms Query produced the highest MAP scores, it took upwards of 5x as long to run compared to the Named Entities query. At this point, one must weigh up the importance of relative result relevance against time concerns. Users are only willing to wait so long for results TODO: Reference. As such, the most appropriate query to run automatically is that which consists of Named Entities.
+
+\begin{center}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+Query                 & MAP    & Mean Query Length & Mean Query Processing \\ 
+& & (Words) & Time (s) \\\hline
+All Terms             & 0.4549 & 358.5             & 2.66615                        \\ \hline
+Named Entities        & 0.3976 & 93.45             & 0.4478                         \\ \hline
+Tf-Idf Named Entities & 0.3040 & 10                & 0.22595                        \\ \hline
+Subject               & 0.1594 & 9.75              & 0.15835                        \\ \hline
+\end{tabular}
+\caption{Terrier Evaluation Results}
+\label{results}
+\end{table}
+\end{center}
+\begin{figure}[h]
+\begin{tikzpicture}
+ \begin{axis}[
+ 	ylabel=$MAP$,
+    xlabel={Mean Query Processing Time},
+    width=0.9\textwidth,
+    height=0.4\textwidth
+    ]
+        \addplot table[x=time,y=map] {data.csv};
+    \end{axis}
+\end{tikzpicture}
+\caption{Mean Query Processing Time vs. MAP} \label{fig: timegraph}
+\end{figure}
+\bigskip
+\begin{figure}[h!]
+\begin{tikzpicture}
+ \begin{axis}[
+ 	ylabel=$MAP$,
+    xlabel={Mean Query Length},
+    width=0.9\textwidth,
+    height=0.4\textwidth
+    ]
+        \addplot table[x=length,y=map] {data.csv};
+    \end{axis}
+\end{tikzpicture}
+\caption{Mean Query Length vs. MAP} \label{fig: lengthgraph}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+\section{User Evaluation}
+\subsection{Think-Aloud}
+
+NAME-UNKNOWN, a key potential beneficiary of such a system participated in a small think-aloud study while examining the software in use. Some of the key points learned from this session are listed below:
+
+\begin{itemize}
+\item \textit{``Named Entity importance is nuanced and frequency (or Tf-Idf) of named entities does not necessarily produce the most important terms.''}
+\par
+This raises an important point regarding the limitations of automatic query generation.\textbf{There is of course the ability to run custom queries. But this could be improved somewhat}
+
+\item \textit{``Further term highlighting or importance weighting is necessary to help produce the best results.''}
+\par
+This point highlight the fact that the queries generated right now are fairly general, and with some deep understanding of the way archivists review documents could help produce better results. Briefly mentioned was weighting the first and last paragraphs higher than the middle of the document, as these are likely to contain the most pertinent information.
+
+\item \textit{``More advanced methods could be leveraged to improve yet further the capabilities of the software, like eye tracking or automatic querying upon highlighting''}
+\par
+Although beyond the scope of this project, this point identifies the potential expansion of this project. Eye-tracking could be used to automatically track what the user is interested in from the source document, forming the basis of new automatic queries. A simplified version of this could use text highlighting to accomplish the same results.
+
+\item \textit{``UI considerations are equally as important as information retrieval considerations when it comes to improving the effectiveness of the software''}
+\par
+At this point in the project, the implementation of most of the IR functionality was complete. It now became important to consider how best to modify and improve the user interface to ensure the easiest experience possible. - DECORATION
+\end{itemize}
+
+\textbf{Talk about how this allowed iteration and improvement}
+
+\section{Refining the System}
+What did we do to make the system better:
+Chose the best query.
+Improved the stopwords file slightly.
+
+What could we do to make the system better
+Add yet more stopwords
+Consider dates.
 
 \section{Conclusion}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusions}
 \section{Fulfilled Requirements}
+The Identifying Public Domain Knowledge project set out to create a system capable of improving the document review system necessary as digital records become more and more widespread.
+The final product satisfies all of the Must Have requirements and addresses some of the Should and Could Have sections. 
 \section{Possible Improvements}
-Machine Learning.
+Machine Learning. Eye Tracking. More Query formulations to analyse.
 
-Reflective
+\section{Reflection}
 
 %%%%%%%%%%%%%%%%
 %              %
