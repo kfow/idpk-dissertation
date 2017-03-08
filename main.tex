@@ -1,8 +1,16 @@
 \documentclass{l4proj}
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage{listings}
 \usepackage{minted}
 \usemintedstyle{emacs}
-\usepackage[utf8]{inputenc}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.8}
 \usepackage{filecontents}
@@ -12,20 +20,9 @@
 \usepackage{enumerate}
 \usepackage{enumitem}
 \usepackage{url}
+\usepackage{amssymb}
+\usepackage{amsmath}
 \newcommand{\code}[1]{\texttt{#1}}
-%% Language and font encodings
-% \usepackage[english]{babel}
-% \usepackage[utf8x]{inputenc}
-% \usepackage[T1]{fontenc}
-
-% %% Sets page size and margins
-% \usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
-
-% %% Useful packages
-% \usepackage{amsmath}
-% \usepackage{graphicx}
-% \usepackage[colorinlistoftodos]{todonotes}
-% \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
 \title{Public vs. Private: \newline Identifying Public Domain Knowledge}
 \author{Kelvin Fowler}
@@ -82,8 +79,8 @@ Terrier, Lucene
 \subsection{Ad-hoc Retrieval}
 
 \subsection{High Recall Tasks}
-Precision, Recall, Have you got all of the relevant documents
-E-Discovery, Patent Search
+High recall task focus on retrieving as many relevant results as possible, rather than high precision task which focus on retrieval of results which are most relevant.
+One such field where this type of retrieval is particularly sought after is E-Discovery, that is, the discovery of all relevant documents pertaining the opposing party in civil litigation. \\ \\ Patent Search
 
 Oard, D. W., \& Webber, W. Information retrieval for e-discovery. Foundations and Trends® in Information Retrieval, 7(2–3), 99-237.(2013)
 Provides a good introduction to e-discovery
@@ -227,9 +224,22 @@ Maven was used as a dependency management and build system \cite{maven}. Maven w
 
 \section{Data}
 \subsection{Source Documents}
-During development the collection of source documents used for testing and experimentation was based 
+During development the collection of source documents used for testing and experimentation was based upon the United States Diplomatic Cables Leak, as released on Wikileaks. This collection has been confirmed to be relevant and very similar to the type of documents reviewed by the archives services in the UK \textbf{do you have a source for this?}. The documents were provided in TREC format, with one document per file. They were arranged into directories based on year and month of creation.
+\begin{minted}{xml}
+<DOC>
+<DOCNO>08ABUDHABI1104</DOCNO>
+<CREATED>2008-09-28</CREATED>
+<RELEASED>2011-08-26</RELEASED>
+<CLASSIFICATION>UNCLASSIFIED//FOR OFFICIAL USE ONLY</CLASSIFICATION>
+<ORIGIN>Embassy Abu Dhabi</ORIGIN>
+<FROM>AMEMBASSY ABU DHABI</FROM>
+<TO>RUEHC/SECSTATE WASHDC 1507</TO>
+<SUBJECT>UAE PRESIDENT DEPLOYS PERSONAL CHARITY FOUNDATION </SUBJECT>
+UAE PRESIDENT DEPLOYS ...
+</DOC>
+\end{minted}
 \subsection{Target Documents}
-A combination of Associated Press and Reuters articles were used as target documents to perform retrieval on. These were in TREC format, with one file per document. They were also each compressed due to the extremely large number of them.
+A combination of Associated Press and Reuters articles were used as target documents to perform retrieval on. These were again in TREC format, with one file per document. They were also each compressed due to the extremely large number of them.
 They were given in the following format:
 \begin{minted}{xml}
 <DOC>
@@ -243,27 +253,54 @@ They were given in the following format:
 \section{Indexing}
 \subsection{Target Documents}
 The system operates on the assumption that there already exists a target index within it's directory structure.
-As such, a separate Java program was written which can index target documents if needs be. This program loads the appropriate Terrier properties and invokes indexing through Terriers API. During target document indexing we set the Terrier properties so as to create abstracts. Abstracts are parts of a tagged document to be saved in meta-data to provide helpful snippets of the document when it is found during retrieval. In this case, we generate abstracts for the title, data, keywords and body of the document to give an idea of document contents when looking at query results.
-The correct configuration of Terrier to achieve this caused considerate trouble during development and was actually the identifier of a flaw in Terrier itself. Owing to the fact that the project supervisor was a Terrier developer, this was fixed through a patch and the target index could be generated.
-As target document indexing uses the same tokeniser as source document indexing, we can guarantee term matching across the two corpora when performing retrieval.
+As such, a separate Java program was written which can index target documents through command line invocation. The program loads the appropriate Terrier properties and invokes indexing through Terrier's API. During target document indexing we set the Terrier properties so as to create abstracts. Abstracts are parts of a tagged document to be saved in meta-data to provide helpful snippets of the document when it is found during retrieval. In this case, we generate abstracts for the title, data, keywords and body of the document to give an idea of document contents when looking at query results.
+The correct configuration of Terrier to achieve this caused considerate trouble during development and was actually the identifier of a flaw in Terrier itself. Owing to the fact that the project supervisor was a key Terrier developer, this was fixed through a patch and the target index could be generated.
+As target document indexing uses the same tokeniser (see \ref{nertok})  as source document indexing, we can guarantee term matching across the two corpora when performing retrieval.
 
 \subsection{Source Documents}
-Source indexing is invoked through the REST API. Again this loads the relevant Terrier properties and invokes indexing through the Terrier API. The Terrier properties important to this operation are the \code{TrecDocTags.PropertyTags}, which identify the tags in a tagged document which are to be saved as document properties, rather than being indexed. Additionally, source indexing also invokes query generation (\ref{querygen}). 
+Source indexing is invoked through the REST API. Again this loads the relevant Terrier properties and invokes indexing through the Terrier API. The Terrier properties important to this operation are the \code{TrecDocTags.PropertyTags}, which identify the tags in a tagged document which are to be saved as document properties, rather than being indexed. Additionally, source indexing also invokes query generation (see \ref{querygen}). 
 
 \paragraph{Available Indexes}
 Since we can index individual directories of source documents, a tool to choose which collection to review must also be provided. This functionality relies on a system of recursive file finding. The psuedocode is as follows:
 
 \subsection{Query Generation} \label{querygen}
+Immediately after indexing a collection of source documents, the system invokes the query generation process. We create 4 queries: All Terms, Named Entity Terms, Top Ten Tf-Idf Named Entities and Subject Queries.
+To create the All Terms and Named Entity Queries we simply iterate through the terms in a given document and append them to a \code{StringBuilder}. One \code{StringBuilder} amalgamates every term found, while the other only takes terms containing an underscore, the identifier for a named entity found during indexing using the \code{NamedEntityTokeniser}.
+For the Tf-Idf query we leverage the Terrier API which has methods to give us all the data we need.
+Tf-Idf (Term Frequency - Inverse Document Frequency) is defined as:
+\begin{gather*}
+Tf\textnormal{-}Idf = Tf \cdot Idf \\
+\textnormal{where:} \\ 
+Tf = \frac{Number\ of\ Times\ Terms\ Appears\ in\ Document}{Total\ Number\ of\ Terms\ in\ Document} \\ \\
+Idf = \ln{\frac{Total\ Number\ of\ Documents\ in\ Collection}{Number\ of\ Documents\ Containing\ Relevant\ Term}}
+\end{gather*}
+For any given term we can retrieve it's term and document frequency in order to easily calculate the Tf-Idf of the term. Once calculated the term and value are inserted into a data structure from which retrieve the top-ten terms to formulate the query.\\
+Since the subject is not indexed like the body of the document we simply retreive the subject from the meta index. We then remove all punctuation and run it through the Named Entity Analysis to obtain a query which will match against the target index. \\
+Having formulated all four queries we wrap them in tags and append them to the end of the trec source document from which they were generated. This allows the process described in \ref{docparse} to find the queries without the need for any new storage mechanisms.
 
-\subsection{Named Entity Tokeniser}
-As aforementioned NO YOU HAVENT, we wanted to identify Named Entities within documents to enhance query generation and provide better retrieval. Terrier indexing uses a tokeniser to identify terms to add to the index. This provided a hook-in point for named entity identification as we can identify if terms are Named Entities before they are passed out of the tokeniser to be added into the index.
+\subsection{Named Entity Tokeniser} \label{nertok}
+We wanted to identify Named Entities within documents to enhance query generation and provide better retrieval. Terrier indexing uses a tokeniser to identify terms to add to the index. This provided a hook-in point for named entity identification as we can identify if terms are Named Entities before they are passed out of the tokeniser to be added into the index.
+A custom subclass of the Tokeniser class in Terrier was implemented which applied named entity identification to a document body before being tokenised.
+If a term was identified to be a named entity by Stanford NLP then an underscore and the named entity type was appended to the terms. For example, 
+\code{kelvin} becomes \code{kelvin\textunderscore person}.
+This tokeniser was used for both source and target indexing to ensure matching during retrieval.
+The logic for annotating a section of text was further abstracted to a seperate class so that it could be reused to annotate any text, outside of the context of tokenisation during indexing. This was used specifically to annotate subject queries in the query generation phase, but could provide further applications in the future.
+\paragraph{Classifiers and Distributional Similarity}
+An instance of \code{StanfordCoreNLP} must be created to use the named entity annotation features.
+In this instance the fewest possible annotators were used to acheive named entity recognition.
+We use the simplest classifier model provide by StanfordNLP which only looks for Location, Organisation and Person named entities.
+As discussed in the evaluation section, we also tried Named Entity models with and without Distributional Similarity Features (The documentation suggests this can improve performance while sacrificing efficiency).
+We also avoid time and numeric entity identification, so as to only focus on the tangible entities mentioned throughout each document.
 
 \section{Retrieval}
-Retrieval is invoked through the REST API. A query is passed in.
+Retrieval is a fairly simple affair, almost identical to the provided example retrieval code provided in the Terrier documentation.
+\paragraph{Decoration}
+At this stage we also leverage Decoration, a functionality provided by Terrier to highlight and emphasise terms within a result set which appear in the query. Conveniently the decoration wraps found terms in \code{<b>} HTML tags, allowing us to render them as bold in the frontend.
 
-\section{Document Parsing}
+\section{Document Parsing} \label{docparse}
 In order to display the source and target documents to users on the front end they must be parsed and converted to JSON.
-Both target and source documents are provided in TREC format with various meta-data tags and an untagged body section. 
+Both target and source documents are provided in TREC format with various meta-data tags and an untagged body section.
+An abstract class, \code{TaggedDocument} was created which reads these documents identifying tag types and content. Once identified, this method can pass the tag type and tag content to the concrete subclass which implements a method
 
 \section{Evaluation Preparation}
 In order to prepare the \code{.topics} and \code{.qrels} files necessary for offline evaluation. 
@@ -370,9 +407,11 @@ Where:
 
 Also considered was the effects of Document At A Time (DAAT) vs. Term At A Time (TAAT) retrieval. This means whether a full document is considered using all the terms from a query (DAAT) or each term is considered concurrently for all documents (TAAT). In order to ensure the choice of query conformed to the non-functional requirements, specifically \textbf{NF.3}, we also consider mean retrieval time.
 \subsection{Results}
+\paragraph{Distributional Similarity in Named Entity Identification}
+\paragraph{Precision At 1 and 5}
 The query which performed the worst was the query formed from the subject line. This can be expected, as other than running Named Entity recognition on the line, no other analysis was done to improve it's performance. There is also no guarantee that the subject line will contain keywords which provide vital context to a query.\\
 Take, for example, this subject from a document in the source collection:
-\center{``PARLIAMENT'S FALL SESSION: A PREVIEW"}
+\begin{center}``PARLIAMENT'S FALL SESSION: A PREVIEW"\end{center}
 We are given no insight into which country this refers to and although this is not true for many documents, the results clearly demonstrate the lack of depth in subject queries causes under-performance.\\
 The Tf-Idf Named Entities query scores almost double the subject query. It is limited to the top 10 highest scoring named entities in terms of Tf-Idf, meaning the query is highly relevant to the given document. Here terms are weighted more heavily if they appear frequently in the source document, but infrequently in the source collection. This (in theory) generates a more specific, focused query. \\
 The query consisting of all named entities identified in the document was second only to the query of all terms. This suggests that the inclusion of verbs and other non named entities produces a more meaningful query.\\
@@ -395,6 +434,7 @@ Subject               & 0.1593 & 9.75              & 0.1688                     
 \label{results}
 \end{table}
 \end{center}
+
 \begin{figure}[h]
 \begin{tikzpicture}
  \begin{axis}[
@@ -422,20 +462,16 @@ Subject               & 0.1593 & 9.75              & 0.1688                     
 \end{tikzpicture}
 \caption{Mean Query Length vs. MAP} \label{fig: lengthgraph}
 \end{figure}
-
-
-
-
-
-
-
-
-
+\subsection{Conclusion}
+Continue running with indexes built upon no distributional similarity.
+Auto run the named entities query.
+Is it unreasonable to use both the distim and no-distim indexes depending upon the query being run? - It provides a massive improvement to the tf-idf named entities and subject queries.
 
 \section{User Evaluation}
 \subsection{Think-Aloud}
 
-NAME-UNKNOWN, a key potential beneficiary of such a system participated in a small think-aloud study while examining the software in use. Some of the key points learned from this session are listed below:
+Timothy Gollins, a key potential beneficiary of such a system participated in a small think-aloud study while examining the software in use. As former Head of Digital Preservation at The National Archives (UK), and current Head of Digital Archiving at the National Records of Scotland, Timothy has expert insight into the problem domain.
+Some of the key points learned from this session are listed below:
 
 \begin{itemize}
 \item \textit{``Named Entity importance is nuanced and frequency (or Tf-Idf) of named entities does not necessarily produce the most important terms.''}

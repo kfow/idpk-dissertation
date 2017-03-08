@@ -26,7 +26,7 @@
 
 \usepackage[toc,page]{appendix}
 \usepackage{times}
-\usepackage[top=3.5cm,bottom=4cm]{geometry}
+%\usepackage[top=3.5cm,bottom=4cm]{geometry}
 \setlength{\parskip}{11pt plus 2pt}
 
 \renewcommand\maketitle{\begin{titlepage}%
