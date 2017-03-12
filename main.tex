@@ -180,6 +180,7 @@ These are requirements which are outside the scope of this project and are not d
 \end{enumerate}
 
 \subsection{Non-Functional Requirements}
+Non-Functional requirements are those requirements that do not define the specific behaviour of the system, but rather how the system performs.
 \begin{enumerate}[label=\textbf{NF.\arabic*}]
 \item Intuitive user interface.
 \item Results must be relevant.
@@ -192,6 +193,15 @@ The application is based on a client-server design. More specifically, a web app
 The client communicates with the server using HTTP requests which request information from the server or update information on the server.
 The web application maintains no state between usages, but rather requests all necessary data from the server at upon loading. Having no state system in the client application greatly reduces the complexity of the web application.
 State and persistence is managed on the server entirely using Terrier and Trec files. This will be discussed in more detail in the Server Architecture section.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.30]{images/BigBox}
+\caption{Overview of System Architecture}
+\label{architecture}
+\end{figure}
+
 
 \subsection{Server Architecture}
 \paragraph{Programming Language}
