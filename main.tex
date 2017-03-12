@@ -255,12 +255,16 @@ JQuery is used in the frontend to interface with the backend through HTTP (AJAX)
 \paragraph{Web Application Framework}
 The web application currently runs on top of an Express.js server running on Node.js \cite{express} \cite{node}. This is not particularly necessary as the web application could, with some refactoring, be served through a static web server such as GitHub Pages. What Express.js does allow for, however, is the use of the EJS template system. EJS allows us to define partial HTML pages and insert them into others. This is useful within the MVVM design as we can initialize compartmentalized parts of the DOM with specific ViewModels using the \code{with} binding, see section (\ref{viewmodels}) for more details.
 
-\todo{Wireframing and Prototyping ++ Images}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{images/FrontendWireframes}
+\caption{Some Initial Wireframes for the System}
+\label{wireframes}
+\end{figure}
 
 \section{Conclusion}
 With these we requirements and design decisions in mind we look, in the next two chapters, at how they they were implemented and the challenges that arose during this. In Chapter \ref{evaluation} we also investigate if the requirements were fulfilled and how effective the implementation of the system was.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Server Implementation} \label{serverimplementation}
 This Chapter will discuss the implementation of the server component of the system. It will cover in detail the use of Terrier to index and retrieve target documents as well as how queries were generated. Also covered is the implementation of the RESTful API to allow communication with the client.
 
@@ -405,36 +409,42 @@ An abstract class, \code{TaggedDocument} was created which reads these documents
 
 \section{Evaluation Preparation}
 In order to prepare the \code{.topics} and \code{.qrels} files necessary for offline evaluation.
+To achieve this API methods were added to receive source documents which had queries that would be used for \code{.topics} files. Another method was added to receive judgements of target documents to populate the \code{.qrels} file. Finally a method was added which read the \code{.qrels} to send those documents to client which had already been reviewed.
+This section was fairly basic file reading and writing although some care was taken to ensure duplicate topics were not added.
 
 \section{API Design}
 The API is designed as follows:
-Get Source Document
+\begin{itemize}
+\item Get Source Document
 \code{GET api/document/{sourceCollectionPath}/{docId}}
-Get Target Document
+\item Get Target Document
 \code{GET api/document/{docNo}}
-Index a Source Collection
+\item Index a Source Collection
 \code{POST api/index}
-Query the Target Index
+\item Query the Target Index
 \code{POST api/query}
-Get Indexed Source Corpora
+\item Get Indexed Source Corpora
 \code{GET api/index}
-Save a document and queries to topics
+\item Save a document and queries to topics
 \code{POST api/topic}
-Save a judegement on a target document for a given source document
+\item Save a judegement on a target document for a given source document
 \code{POST api/qrel}
-Get those target documents which are already judeged for a given source document
+\item Get those target documents which are already judeged for a given source document
 \code{GET api/qrel/{num}}
+\end{itemize}
 
 \section{Properties}
-Terrier operates with a collection of properties which change the behaviour of it's various operations. These properties can be set inside a terrier.properties file, however this complicates changing these properties between different operations. These properties can be set programatically and so a static class was made which allows for easy switching of settings to facilitate correct invokation of indexing and retrieval. : Talk about Source vs. Target indexing
+Terrier operates with a collection of properties which change the behaviour of it's various operations. These properties can be set inside a terrier.properties file, however this complicates changing these properties between different operations. These properties can be set programatically and so a static class was made which allows for easy switching of settings to facilitate correct invokation of indexing and retrieval.
 
-\section{Summary}
-Was query generation effective?
-Is the system scalable?
-Did NLP models effect the query results?
-Is the system fast?
+\section{Summary} \label{serversummary}
+The implementation of the server component of the system prompted the following research questions:
+\begin{itemize}
+\item Was query generation effective?
+\item Is the system scalable?
+\item Did NLP models effect the query results?
+\item Is the system fast?
+\end{itemize}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Client Implementation} \label{clientimplementation}
 This chapter will deal with the steps taken in the implementation of the web application which acts as the client in the client server paradigm.
 
@@ -476,8 +486,12 @@ We use css to highlight in red those terms which we appear in the query and are 
 \label{relevant_results}
 \end{figure}
 
-\section{Summary}
-In order to validate user acceptance testing it was decided that variants of the front end system were to be created. These variants would play on some of the main features of the frontend design, in order to identify the UI elements which were helping and hindering the user experience.
+\section{Summary} \label{clientsummary}
+The implementation of the client component of the system prompted the following research questions:
+\begin{itemize}
+\item Is the user interface easy to use?
+\item Are the documents presented in an intuitive way?n
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Evaluation} \label{evaluation}
@@ -541,11 +555,10 @@ The query formed from Tf-Idf ranking of named entities was interesting. It often
 \subsection{Experimental Setup}
 Source docuements analagous to those reviewed by governemnt every day.
 Target documents are news articles in the public domain.
-For 20 source documents reviewed the top 20 results of 4 queries and marked as relevant/not relevant to generate ground truth against which offline evaluations could be run.
+For 20 source documents reviewed the top 20 results of 4 queries and marked as relevant/not relevant to generate ground truth against which offline evaluations could be run.\\
 Judgements exist in \code{.qrels} file.
 Topics to be tested exist in \code{.topics} file.
-Run in stand alone distribution of terrier outside of main application.
-
+Run in stand alone distribution of terrier outside of main application.\\
 Offline evaluation was performed using the evaluation tools provided with Terrier. This evaluation allows one to produce detailed statistics regarding the performance of an IR system.\\
 
 Measurements we will be most interested in.
@@ -654,6 +667,9 @@ We can compare the precision against the standard no distributional similarity r
 \caption{Comparison of Query Precision using Different NE Models}
 \label{query_by_query}
 \end{figure}
+
+08HANOI1120 performs much worse!
+
 \subsection{Can we make the Tf-Idf Query Perform Better?}
 \subsection{What makes a query good or bad?}
 The queries formed from source documents \code{08ACCRA176} and \code{08MASERU158} score 0 precision in all four categories. This can be put down to the content of both of these documents. \code{08ACCRA176} describes a meeting of Ghanaian official following the raid of a brothel and \code{08MASERU158} describes a public transportation dispute. These stories are very local and so the number of relevant documents to find in the target collection will be vanishingly slim. \\
@@ -662,10 +678,10 @@ A single word can throw off the search results. ``Congress''. \\
 \paragraph{Precision at 1}
 \paragraph{Precision at 4}
 At any given time, one can typically view 4 target documents in the search results page of the web application. It is interesting, then, to gather information on the precision of the top 4 documents returned when querying.
-
+\subsection{Improving Queries}
 \paragraph{per-query scatterplot of source document length vs average precision of different query representations}
 
-\subsection{Conclusion} 
+\subsection{Conclusion}
 Although the All Terms Query produced the highest MAP scores, it took upwards of 5x as long to run compared to the Named Entities query. At this point, we must weigh up the importance of relative result relevance against time concerns. Users are only willing to wait so long for results (Google and Microsoft suffer business impacts for 0.5s delays! \cite{performance}). The most highly performing queries consist of more terms and take longer to progress, although even this has diminishing returns.
 As such, the most appropriate query to run automatically is that which consists of Named Entities.
 \todo{Can we use both target indexes?}
@@ -694,18 +710,20 @@ Although beyond the scope of this project, this point identifies the potential e
 At this point in the project, the implementation of most of the IR functionality was complete. It now became important to consider how best to modify and improve the user interface to ensure the easiest experience possible. - DECORATION
 \end{itemize}
 
-\textbf{Talk about how this allowed iteration and improvement}
+This user evaluation helped to answer the research questions from section \ref{clientsummary}. The enthusiasm shown by the participant clearly suggests the system is an improvement on the current system. However it is also clear that there are certain nuances which must be addressed.
+The system needs to do everything possible to highlight potential matches between source and target documents in order to help the reviewer identify public domain knowledge in the most efficient way.
 
 \section{Refining the System}
-What did we do to make the system better:
-Chose the best query.
-Improved the stopwords file slightly.
+This evaluation helped us to improve the system in various ways.
+We were able to identify the most appropriate query to automatically run. We were able to choose the most effective way of identifying named entities.
+We were driven to implement decoration of search results to improve the user experience.
+We altered the stopwords file to ensure strange named entities were removed early.
 
-What could we do to make the system better
-Add yet more stopwords
-Consider dates.
+There is, however, many more changes that could be made to improve the performance of the system that we were unable to implement with in the time frame of the project.
+Decoration while reading source documents. The best subset of potential queries possible, which actually achieve different things.
+Better Named Entity recognition.
+Can we mix target indexes to ensure the best results for each query, hopefully, with enough refinement this isn't even necessary.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusions} \label{conclusion}
 \section{Fulfilled Requirements}
 The Identifying Public Domain Knowledge project set out to create a system capable of improving the document review system necessary as digital records become more and more widespread.
