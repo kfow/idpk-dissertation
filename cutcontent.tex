@@ -1,0 +1,29 @@
+\section{Data}
+\subsection{Source Documents}
+\todo{discuss this in experimental set-up section of evaluation, also don't have to directly mention wikileaks.}
+During development the collection of source documents used for testing and experimentation was based upon the United States Diplomatic Cables Leak, as released on Wikileaks. This collection has been confirmed to be relevant and very similar to the type of documents reviewed by the archives services in the UK \textbf{do you have a source for this?}. The documents were provided in TREC format, with one document per file. They were arranged into directories based on year and month of creation.
+\begin{minted}{xml}
+<DOC>
+<DOCNO>08ABUDHABI1104</DOCNO>
+<CREATED>2008-09-28</CREATED>
+<RELEASED>2011-08-26</RELEASED>
+<CLASSIFICATION>UNCLASSIFIED//FOR OFFICIAL USE ONLY</CLASSIFICATION>
+<ORIGIN>Embassy Abu Dhabi</ORIGIN>
+<FROM>AMEMBASSY ABU DHABI</FROM>
+<TO>RUEHC/SECSTATE WASHDC 1507</TO>
+<SUBJECT>UAE PRESIDENT DEPLOYS PERSONAL CHARITY FOUNDATION </SUBJECT>
+UAE PRESIDENT DEPLOYS ...
+</DOC>
+\end{minted}
+\subsection{Target Documents}
+A combination of Associated Press and Reuters articles were used as target documents to perform retrieval on. These were again in TREC format, with one file per document. They were also each compressed due to the extremely large number of them.
+They were given in the following format:
+\begin{minted}{xml}
+<DOC>
+<DOCNO>trc2_168664420090204</DOCNO>
+<TITLE>GLOBAL MARKETS-Economy hopes boost stocks, dollar</TITLE>
+<DATE>2009-02-04</DATE>
+<KEYWORDS> MARKETS GLOBAL   </KEYWORDS>
+* Global stocks rise on economy hopes...
+</DOC>
+\end{minted}
