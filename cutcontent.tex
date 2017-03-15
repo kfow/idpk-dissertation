@@ -27,3 +27,8 @@ They were given in the following format:
 * Global stocks rise on economy hopes...
 </DOC>
 \end{minted}
+
+
+
+\paragraph{Available Indexes}
+Since we can index individual directories of source documents, a tool to choose which collection to review must also be provided. This functionality relies on a system of recursive file finding. We simply look in index directories until we find a \code{collection.spec} file indicating an index is present. This relative path can be used to give the directory of source documents in the \code{collections} directory as the this and the index directory are exact mirrors of each other.
