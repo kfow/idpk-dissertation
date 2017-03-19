@@ -32,3 +32,25 @@ They were given in the following format:
 
 \paragraph{Available Indexes}
 Since we can index individual directories of source documents, a tool to choose which collection to review must also be provided. This functionality relies on a system of recursive file finding. We simply look in index directories until we find a \code{collection.spec} file indicating an index is present. This relative path can be used to give the directory of source documents in the \code{collections} directory as the this and the index directory are exact mirrors of each other.
+
+
+ It is arranged as follows:
+\begin{itemize}
+\item Get Source Document \\
+\code{GET api/document/{sourceCollectionPath}/{docId}}
+\item Get Target Document \\
+\code{GET api/document/{docNo}}
+\item Index a Source Collection \\
+\code{POST api/index}
+\item Query the Target Index \\
+ \\
+The HTTP verb post was chosen here to allow for a larger JSON payload to be passed to the server. This is because some queries are too large to be passed as a query string in a GET request.
+\item Get Indexed Source Corpora \\
+\code{GET api/index}
+\item Save a document and queries to topics \\
+\code{POST api/topic}
+\item Save a judgement on a target document for a given source document \\
+\code{POST api/qrel}
+\item Get those target documents which are already judeged for a given source document \\
+\code{GET api/qrel/{num}}
+\end{itemize}
