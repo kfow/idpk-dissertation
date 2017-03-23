@@ -69,14 +69,14 @@ Further to this, the current system of document review involves no integrated pu
 
 Understanding this, the final product should be a system which can keep up with the vast number of documents which need to be reviewed within archives. A system which is encapsulated and secure when it comes to further research on the content of a document is also sought.
 
-Interestingly, this field has experienced some media coverage in recent times, with certain current affairs being directly linked to sensitive documents. In the case of Hillary Clinton email scandal, the FBI used technology to aid their process in reviewing these emails for sensitivities~\cite{cnnclinton}. 
+Interestingly, this field has experienced some media coverage in recent times, with certain current affairs being directly linked to sensitive documents. In the case of the Hillary Clinton email scandal, the FBI used technology to aid their process in reviewing these emails for sensitivities~\cite{cnnclinton}. 
 
 Combining these concerns this project strives to produce a highly practical and helpful system, which can inspire and encourage further work into this problem domain. To understand further motivations and context behind this project, see Chapter \ref{relatedliterature}.
 
 \section{Terminology}
 Throughout this document certain terms will be used which may not be familiar.
 A \textbf{Source Document} is the document which is being reviewed. It is the document from which queries are generated for IR.
-A \textbf{Target Document} is a document in the public domain which may contain information relevant to the review of a source document. These documents are which are to be retrieved.
+A \textbf{Target Document} is a document in the public domain which may contain information relevant to the review of a source document. These are the documents are which are to be retrieved.
 
 \section{Structure}
 This dissertation will take the following structure.
@@ -132,7 +132,7 @@ These are the requirements the the project must fulfil to be considered successf
 \textit{As a} document reviewer, \\
 \textit{I want} the ability to decide that a document contains public domain knowledge \\
 \textit{So that} I can make a decision regarding its status. \\
-\item frontend user interface displaying source document for review and target documents automatically identified by the software. \\
+\item Frontend user interface displaying source document for review and target documents automatically identified by the software. \\
 \textit{As a} document reviewer, \\
 \textit{I want} to view both the document up for review and associated public domain documents \\
 \textit{So that} I can easily compare the contents of both and see what is known in the public domain.
@@ -222,10 +222,10 @@ This design entirely eliminates the need for a DBMS (Database Management System)
 \paragraph{Natural Language Processing (NLP)}
 As Terrier mandated the use of Java, any NLP framework chosen was required to have a Java API.
 Stanford Natural Language Processing was used as an NLP framework to identify terms from which to form effective queries~\cite{manning-EtAl:2014:P14-5}. The Java API allows text to be analysed and annotated. More specifically, the named entity identification capability of StandordNLP was used~\cite{finkel2005incorporating}.
-Stanford NLP was initially chosen due to its preferable documentation. It also offers the ability to identify specifically which tokenisers to use when processing some text allowing the developer to streamline the NLP process to their specific use-case.
+Stanford NLP was initially chosen due to its preferable documentation. It also offers the ability to identify specifically which tokenisers to use when processing some text, allowing the developer to streamline the NLP process to their specific use-case.
 
 \paragraph{RESTful API}
-Jersey is a framework which provides a reference implementation of the JAX-RS API as defined by Oracle~\cite{jersey,jaxrsapi}.
+Jersey is a framework which provides a reference implementation of the JAX-RS API as defined by Oracle, allowing a REST API to be developed~\cite{jersey,jaxrsapi}.
 Jackson is used alongside Jersey to provide support for JSON~\cite{jackson}. This allows the frontend and backend to communicate using one format. It handles the conversion of JSON to Java Objects and vice versa.
 This set-up allows one to define a fully functional HTTP REST API which can consume and produce JSON.
 
@@ -252,7 +252,7 @@ The web application currently uses an Express.js server running on Node.js \cite
 Draw.io was used in the initial stages of design to wireframe ideas for how the web application should look~\cite{drawio}. An example of this can be seen in Figure~\ref{wireframes}.
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.35]{images/FrontendWireframes}
+\includegraphics[scale=0.3]{images/FrontendWireframes}
 \caption{An Initial Wireframe for the System}
 \label{wireframes}
 \end{figure}
@@ -363,7 +363,7 @@ s countries lrb  state_location who  rrb   will 24 participate made tell event 3
 \label{code:sample_all_terms_query}
 \end{codelisting}
 \paragraph{Named Entities Query}
-Producing the \textit{Named Entities Query} is similar to the \textit{All Terms Query}. The collection of all terms for a document is iterated over, but this time only those terms which contain an underscore are selected, the identifier for a named entity found during indexing using the \code{NamedEntityTokeniser}. This query obviously lacks the non named entities terms in the document, and so is much shorter. The motivation here was to understand if the named entities alone were enough to produce meaningful results. A sample of the \textit{Named Entities Query} for the document shown in Figure~\ref{code:examplesourcedocument} can be seen in Figure~\ref{code:sample_ne_query} with the full version available in Figure~\ref{code:ne_query}. This query is a merely the above query with all non named entity terms removed.
+Producing the \textit{Named Entities Query} is similar to the \textit{All Terms Query}. The collection of all terms for a document is iterated over, but this time only those terms which contain an underscore are selected, the identifier for a named entity found during indexing using the \code{NamedEntityTokeniser}. This query obviously lacks the non named entities terms in the document, and so is much shorter. The motivation here was to understand if the named entities alone were enough to produce meaningful results. A sample of the \textit{Named Entities Query} for the document shown in Figure~\ref{code:examplesourcedocument} can be seen in Figure~\ref{code:sample_ne_query} with the full version available in Figure~\ref{code:ne_query}. This query is merely the above query with all non named entity terms removed.
 \begin{codelisting}
 \begin{minted}[breaklines,breaksymbolleft={}]{xml}
 state_location iran_location foreign_organization department_organization group_organization uk_location political_organization office_organization regional_organization coordination_organization poloff_person c_organization
@@ -471,7 +471,7 @@ The implementation of the server component of the system prompted the following 
 
 % MAX 3 PAGES
 \chapter{Client Implementation} \label{clientimplementation}
-This chapter will deal with the steps taken in the implementation of the web application which acts as the client in the client-server paradigm.
+This chapter will deal with the steps taken in the implementation of the web application which acts as the client in the client-server paradigm. The client mainly consists of two side by side panels. The left side presents source documents and the right side presents query results and target documents using a tab system. The web application could be considered as a ``single page application''.
 
 \section{Tools and Methods}
 \paragraph{Dependency Management}
@@ -807,11 +807,11 @@ The evaluations highlighted the successes and shortcomings of the project, answe
 The Identifying Public Domain Knowledge project set out to create a system capable of improving the document review system necessary as digital records become more and more widespread.
 The final product satisfies all of the Must Have requirements and addresses some of the Should and Could Have sections. In terms of these requirements, the project can be classified as a success. More generally the project certainly addresses the needs set out in Section~\ref{needs}. The tool is fairly efficient and effective for reviewing documents addressing \textbf{Need.1}. \textbf{Need.2} is satisfied through automatic querying for target documents and the two panel display interface. \textbf{Need.3} is addressed by the tool not accessing information on the internet. All information is stored locally on the server, preventing sensitive searches from being exposed.
 
-It demonstrates the applications IR and technology can have in the field of sensitivity review and paves the way for continued work to improve the ability of government to be transparent and fair, a matter which is very relevant in today's geo-political landscape. The project fails, however, to deal with all of the requirements and lacks some features which could greatly improve the usability and functionality
+It demonstrates the applications IR and technology can have in the field of sensitivity review and paves the way for continued work to improve the ability of government to be transparent and fair, a matter which is very relevant in today's geo-political landscape. The project fails, however, to deal with all of the requirements and lacks some features which could greatly improve the usability and functionality.
 
 \section{Opportunities for Future Work}
 If work were to continue on this project many sections could be improved and new features could be introduced. Addressing the concerns raised in Chapter~\ref{evaluation} it would be highly advisable to experiment more thoroughly with different query formulations to achieve the very best performance possible. This would require lots of very domain specific tweaking and testing. A key initial improvement may be to implement date analysis to ensure target documents are with in a reasonable time frame. This was identified as requirement~\textbf{S.3} but was never implemented due to time constraints.
-Further to this, it would be achievable and worthwhile to perform better key phrase extraction upon source documents to from queries with named entities and context, other than the behemoth All Terms Queries which took too long to perform.
+Further to this, it would be achievable and worthwhile to perform better key phrase extraction upon source documents to form queries with named entities and context, other than the behemoth \textit{All Terms Queries} which took too long to return results.
 
 Further in the future, machine learning could be introduced into the system so it could begin to improve over time and with repeated use. This would be more useful if the product could be used in a real working environment, so it could adapt to the procedures of its end users.
 Even later in development, improved HCI features like eye tracking could be implemented to truly respond in real time to user input, but this would require all other aspects of the system to be much more robust.
@@ -847,6 +847,7 @@ craig_person fco_organization hmg_organization participate_organization martinek
 \captionof{figure}{An Example TF-IDF Named Entities Query}
 \label{code:tf_idf_query}
 \end{codelisting}
+\pagebreak
 \begin{codelisting}
 \begin{minted}[breaklines,breaksymbolleft={}]{xml}
 uk will not participate in irans_location nuclear conference will discourage others from attending ref state 112229
@@ -869,6 +870,21 @@ council_organization sbu_organization us_organization us_location united_locatio
 \captionof{figure}{Named Entity Query When Using Models With Distributional Similarity}
 \label{code:hanoiwith}
 \end{codelisting}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+ \begin{axis}[
+ 	ylabel=$MAP$,
+    xlabel={Mean Query Processing Time},
+    width=0.50\linewidth,
+    height=0.25\linewidth
+    ]
+        \addplot table[x=time,y=map] {data.csv};
+    \end{axis}
+\end{tikzpicture}
+\end{figure}
+
 \end{appendices}
 
 %%%%%%%%%%%%%%%%%%%%
